@@ -1,37 +1,40 @@
 from os import walk, path
 
-def collectHumFiles(folderPath):
-    humans = []
+def findFiles(folderPath):
+    collectedFiles = []
 
     for root, dirs, files in walk(folderPath):
         for file in files:
             if file.lower().endswith('.hum'):
-                humans.append(path.join(root, file))
+                collectedFiles.append(path.join(root, file))
 
-    return humans
+    return collectedFiles
 
 
-def selectHumans(humanList):
+def selectFiles(list):
     print ("Select your .hum files:")
-    for i, file in enumerate(humanList):
+    for i, file in enumerate(list):
         print(f"{ i + 1 }. { file }")
 
+    index = input("Enter the numbers yout want to choose (e.g. 1,2,3): ")
+    
     try:
-        choice = int(input("Enter the number you want to add: ")) - 1
-        if 0 <= choice < len(humanList):
-            return humanList[choice]
+        if index:
+            index = [int(id.strip()) - 1 for id in index.split(',')]
+            selectedFiles = [list[id] for id in index]
+            return selectedFiles
         else:
             raise ValueError
     except ValueError:
-            print("Invalid number!")
-            return selectHumans(humanList)
+        print("Something went wrong")
+        return selectFiles(list)
 
 def main():
     folderPath = 'Humans/'
-    humans = collectHumFiles(folderPath)
+    humans = findFiles(folderPath)
 
     if humans:
-        selection = selectHumans(humans)
+        selection = selectFiles(humans)
         print(f"You selected: { selection }")
     else:
         print("No .hum files found in current context!")
